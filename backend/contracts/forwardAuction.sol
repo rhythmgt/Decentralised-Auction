@@ -6,13 +6,14 @@ contract forwardAuction{
 
 	address payable public seller;
 	uint public auctionEndTime;
-	uint minimum_Bid = 0;
+	uint minimumBid = 0;
+	uint minimumIncrement = 1;
 	address public highestBidder;
 	uint public highestBid = 0;
 
 	bool auctionEnded = false;
+	bool withdrawAllowed = false;
 	mapping(address => uint) public pendingReturns;
-	address[] bidders = new address[](0);
 
 	/// Auction has already ended
 	error AuctionAlreadyEnded();
@@ -32,10 +33,18 @@ contract forwardAuction{
 	/// Lesser than minimum bid
 	error LesserThanMin();
 
-	constructor( uint biddingPeriod, address payable sellerAddress, uint minBid){
+	/// Lesser increment than threshold
+	error LesserIncrementThanThresh();
+
+	/// Withdraw Not allowed before Auction End
+	error WithdrawNotAllowed();
+
+	constructor( uint biddingPeriod, address payable sellerAddress, uint minBid, uint minIncrement, bool allowWithdraw){
 		seller = sellerAddress;
 		auctionEndTime = block.timestamp + biddingPeriod;
-		minimum_Bid = minBid;
+		minimumBid = minBid;
+		minimumIncrement = minIncrement;
+		withdrawAllowed = allowWithdraw;
 	}
 
 	function bid() external payable{
@@ -47,15 +56,14 @@ contract forwardAuction{
 			revert NotHighestBid();
 		}
 
-		if (msg.value < minimum_Bid){
+		if (msg.value < minimumBid){
 			revert LesserThanMin();
 		}
 
-		if (pendingReturns[msg.sender] > 0){
+		if (pendingReturns[msg.sender] > 0 || highestBidder == msg.sender){
 			revert BidAlreadyPresent();
 		}
 
-		bidders.push(msg.sender);
 		if (highestBid > 0){
 			pendingReturns[highestBidder] = highestBid;
 		}
@@ -82,8 +90,12 @@ contract forwardAuction{
 			revert NotHighestBid();
 		}
 
-		if (msg.value + prevValue < minimum_Bid){
+		if (msg.value + prevValue < minimumBid){
 			revert LesserThanMin();
+		}
+
+		if (100*msg.value < highestBid*minimumIncrement){
+			revert LesserIncrementThanThresh();
 		}
 
 		if (highestBid > 0){
@@ -96,6 +108,9 @@ contract forwardAuction{
 	}
 
 	function withdrawBid(address addr) internal returns (bool){
+		if (!withdrawAllowed){
+			revert WithdrawNotAllowed();
+		}
 		uint amt = pendingReturns[addr];
 		if (amt==0) return true;
 
@@ -119,11 +134,8 @@ contract forwardAuction{
 		}
 
 		auctionEnded = true;
-
+		withdrawAllowed = true;
 		payable(seller).transfer(highestBid);
-		for (uint i=0; i<bidders.length; i++){
-			withdrawBid(bidders[i]);
-		}
 
 	}
 }
