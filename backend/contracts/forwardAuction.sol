@@ -90,11 +90,7 @@ contract forwardAuction{
 			revert NotHighestBid();
 		}
 
-		if (msg.value + prevValue < minimumBid){
-			revert LesserThanMin();
-		}
-
-		if (100*msg.value < highestBid*minimumIncrement){
+		if (100*(msg.value+prevValue) < highestBid*minimumIncrement){
 			revert LesserIncrementThanThresh();
 		}
 
