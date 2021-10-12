@@ -7,7 +7,7 @@ contract forwardAuction{
 	address payable public seller;
 	uint public auctionEndTime;
 	uint minimumBid = 0;
-	uint minimumIncrement = 1;
+	uint minimumIncrement = 1; // refers to 1 percent
 	address public highestBidder;
 	uint public highestBid = 0;
 
@@ -90,11 +90,7 @@ contract forwardAuction{
 			revert NotHighestBid();
 		}
 
-		if (msg.value + prevValue < minimumBid){
-			revert LesserThanMin();
-		}
-
-		if (100*msg.value < highestBid*minimumIncrement){
+		if (100*(msg.value+prevValue - highestBid) < highestBid*minimumIncrement){
 			revert LesserIncrementThanThresh();
 		}
 
