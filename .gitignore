@@ -146,3 +146,8 @@ dist
 # editor
 
 /frontend/.idea
+
+
+# backend build
+
+/backend/build/

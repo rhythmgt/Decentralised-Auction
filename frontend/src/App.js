@@ -1,7 +1,14 @@
 import logo from './logo.svg';
 import './App.css';
+import { useEffect } from 'react';
+import {init} from './Web3Client';
 
 function App() {
+
+	useEffect(() => {
+		init();
+	}, []);
+
   return (
     <div className="App">
       <header className="App-header">
