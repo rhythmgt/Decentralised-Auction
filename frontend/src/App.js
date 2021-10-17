@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import { useEffect } from 'react';
 import {init} from './Web3Client';
-
+import { bid } from './Web3Client';
 function App() {
 
 	useEffect(() => {
@@ -16,6 +16,7 @@ function App() {
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
+		<button onClick = {() => bid()}>Bid</button>
         <a
           className="App-link"
           href="https://reactjs.org"
@@ -25,6 +26,7 @@ function App() {
           Learn React
         </a>
       </header>
+	  
     </div>
   );
 }

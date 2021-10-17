@@ -2,6 +2,9 @@ import Web3 from 'web3';
 import forwardAuctionBuild from 'contracts/forwardAuction.json';
 
 let selectedAccount;
+
+let forwardAuctionContract;
+let isInitialised = false;
 export const init = async () =>{
 	let provider = window.ethereum;
 
@@ -15,6 +18,7 @@ export const init = async () =>{
 			).catch(
 				(err) => {
 					console.log(err);
+					return;
 				}
 			);
 			window.ethereum.on('accountsChanged', (accounts)=>{
@@ -25,6 +29,28 @@ export const init = async () =>{
 
 		const web3 = new Web3(provider);
 		const networkId = await web3.eth.net.getId();
-		const forwardAuctionContract = new web3.eth.Contract(forwardAuctionBuild.abi , forwardAuctionBuild.networks[networkId].address);
-		console.log("forwardAuction", forwardAuctionContract)
+		forwardAuctionContract = new web3.eth.Contract(forwardAuctionBuild.abi , forwardAuctionBuild.networks[networkId].address);
+		console.log("forwardAuction", forwardAuctionContract);
+		isInitialised = true;
+
 }
+
+// functions of forwardAuction
+
+export const bid = async () => {
+	if (!isInitialised){
+		await init();
+	}
+
+
+	return forwardAuctionContract.methods
+	.bid()
+	.send({from: selectedAccount})
+	.then((tx)=>{
+	console.log(tx);
+	})
+	.catch((err) =>{
+		console.log(err);
+	})
+	;
+};
