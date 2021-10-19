@@ -3,11 +3,27 @@ import forwardAuctionBuild from 'contracts/forwardAuction.json';
 
 let selectedAccount;
 
-let forwardAuctionContract;
 let isInitialised = false;
-export const init = async () =>{
-	let provider = window.ethereum;
 
+const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:9545'));
+let forwardAuctionContract = new web3.eth.Contract(forwardAuctionBuild.abi);
+
+export const init = async () =>{
+	forwardAuctionContract.options.data = forwardAuctionBuild.bytecode;
+	forwardAuctionContract.deploy({
+		arguments: [1000, "0x580a30e798b815f869867f67e8389ae118a6e774", 0, 0, false]
+	})
+	.send({
+		from: '0x580a30e798b815f869867f67e8389ae118a6e774',
+		gas: 6721975,
+		gasPrice: '2'
+	})
+	.then(function(newContractInstance){
+		console.log("Deployed:", newContractInstance.options.address) // instance with the new contract address
+		forwardAuctionContract = newContractInstance;
+		console.log("forwardAuction", forwardAuctionContract);
+
+		let provider = window.ethereum;	
 		if (typeof provider !== 'undefined'){
 
 			provider.request({method: 'eth_requestAccounts'}).then(
@@ -27,12 +43,17 @@ export const init = async () =>{
 			})
 		}
 
-		const web3 = new Web3(provider);
-		const networkId = await web3.eth.net.getId();
-		forwardAuctionContract = new web3.eth.Contract(forwardAuctionBuild.abi , forwardAuctionBuild.networks[networkId].address);
-		console.log("Contract address", forwardAuctionBuild.networks[networkId]);
-		console.log("forwardAuction", forwardAuctionContract);
+		else{
+			console.log ("This will work only with modern browsers and Metamask installed");
+			return;
+		}
 		isInitialised = true;
+
+	})
+	.catch((err) =>{
+		console.log(err);
+		return;
+	});
 
 }
 
@@ -52,8 +73,7 @@ export const bid = async (bidVal) => {
 	})
 	.catch((err) =>{
 		console.log(err);
-	})
-	;
+	});
 };
 
 export const getHighestBid = async () => {
@@ -72,5 +92,4 @@ export const getHighestBid = async () => {
 		.catch((err) =>{
 			console.log(err);
 		});
-	// return [highestBid, highestBidder];
 }
