@@ -19,4 +19,10 @@ This is a blockchain based e-Auction system
 5. Open browser console to see what is happening. Use *Highest Bid*  button to get highest bid information. Use given form to place a bid.
 6. Switch accounts using metamask and try placing a **higher** bid.
   
-  
+## How to contribute
+1. Clone the repo using ```git clone https://github.com/rhuthmos/Decentralised-Auction```
+2. Make a new branch using ```git checkout -b <Branchname>```
+3. Make your changes and commit regularly.
+4. Push your branch using ```git push origin <Branchname>```
+5. Create a pull request by clicking on the button in github repo. Add one among the repo contributors as code reviewer.
+6. Code reviewer will review the code and suggest changes, and after the branch is ready to merge, it will be merged.
