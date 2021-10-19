@@ -13,6 +13,7 @@ This is a blockchain based e-Auction system
   In a new terminal, ```cd backend```  
   Run ```truffle develop``` . You will get a bunch of local accounts which can be added to metamask by entering their secret keys.  
   Run ```compile --reset``` inside truffle shell to compile smart contracts.<br>
+*Note that you might need to change blockchain IP and address of account which is deploying the contract. One can find these in frontend/src/Web3Client.js*
 
 3. ```cd frontend```
 4. ```npm start```
