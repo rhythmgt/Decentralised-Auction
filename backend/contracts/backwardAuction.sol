@@ -15,13 +15,13 @@ contract backwardAuction{
 	/// Auction has already ended
 	error AuctionAlreadyEnded();
 
-	constructor( uint biddingPeriod, address payable buyerAddress, uint startingBid, uint minDecrement) payable{
-		require(msg.value == startingBid);
+	constructor( uint biddingPeriod, address payable buyerAddress, uint maxBid, uint minDecrement) payable{
+		require(msg.value == maxBid);
 		require(msg.sender == buyerAddress);
 		buyer = buyerAddress;
 		auctionEndTime = block.timestamp + biddingPeriod;
-		lowestBid = startingBid;
-		startBid = startingBid;
+		lowestBid = maxBid;
+		startBid = maxBid;
 		minimumDecrement = minDecrement;
 	}
 

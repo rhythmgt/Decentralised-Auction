@@ -1,47 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
-import { useEffect } from 'react';
-import { init, bid, getHighestBid } from './Web3Client';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import {useEffect, useState} from "react";
+import {init} from './Web3Client';
+import NavBar from "./NavBar";
+import Home from "./Home";
+import StartAuction from "./StartAuction";
+import ViewAuction from "./ViewAuction";
+
 function App() {
+    // const [login, setLogin] = useState(false);
+    const [selectedAccount, setSelectedAccount] = useState(false);
 
-	useEffect(() => {
-		init();
-	}, []);
 
-	var bidVal = 0;
-
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-		<form onSubmit={
-			(e)=>{
-			e.preventDefault();
-			bid(bidVal);} }>
-			<label>
-				Value:
-				<input type="number"  onChange={(e)=>{bidVal = e.target.value}}/>
-			</label>
-			<input type="submit" value="Submit" />
-		</form>
-		
-		<button onClick = {() => getHighestBid()}>Highest Bid</button>
-		
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-	  
-    </div>
-  );
+    return (
+        <Router>
+            <NavBar selectedAccount={selectedAccount} setSelectedAccount={setSelectedAccount}/>
+            <div className="content">
+                <Switch>
+                    <Route exact path="/">
+                        <Home/>
+                    </Route>
+                    <Route exact path="/startauction">
+                        <StartAuction selectedAccount={selectedAccount}/>
+                    </Route>
+                    <Route exact path="/viewauction">
+                        <ViewAuction/>
+                    </Route>
+                </Switch>
+            </div>
+        </Router>
+    );
 }
 
 export default App;
