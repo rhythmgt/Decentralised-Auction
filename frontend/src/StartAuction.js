@@ -11,6 +11,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import CircularProgress from '@mui/material/CircularProgress';
+import Chip from "@mui/material/Chip";
 
 
 const StartAuction = (props) => {
@@ -34,9 +35,9 @@ const StartAuction = (props) => {
             promise = createBackwardAuction(props.selectedAccount, auctionParameters)
         }
         promise.then(function (newContractInstance) {
+            console.log(newContractInstance)
             setAuctionCreated(true)
             setAuctionAddress(newContractInstance.options.address)
-            console.log(newContractInstance)
             setIsCreatingAuction(false)
         })
             .catch((err) => {
@@ -66,6 +67,10 @@ const StartAuction = (props) => {
             })
         }
     }
+    const reset = e => {
+        setAuctionType(null);
+        setAuctionCreated(false);
+    }
     useEffect(() => {
         setAccount(props.selectedAccount)
     }, [props.selectedAccount]);
@@ -78,10 +83,22 @@ const StartAuction = (props) => {
         return (<div id="homesec"><p className="centerButton"><CircularProgress size="60px" thickness={4}
                                                                                 style={{color: "#007bff"}}/></p></div>);
     }
-    console.log(props.selectedAccount)
     return (
         <div id="homesec">
-            {auctionCreated && <p className="centerButton">Auction created. Address - {auctionAddress}</p>}
+            {auctionCreated &&
+            <div className="centerButton" style={{textAlign:"center"}}>
+                <p  style={{fontSize: "25px", fontWeight: "0", margin:"0em"}}>Auction created<br/>Contract
+                    Address -<br/></p>
+                    <Chip
+                        label={auctionAddress}
+                        title={auctionAddress}
+                        style={{fontSize:"1.5rem", padding:"25px 16px", margin:"0.75em"}}
+                    /><br/>
+                <Button variant="contained" onClick={reset}>
+                    Create another Auction
+                </Button>
+            </div>
+            }
             {!auctionCreated &&
             <Grid container direction="column" alignItems="center" className="centerButton">
                 <Grid item margin={'10px'}>
@@ -179,11 +196,11 @@ const createForwardAuction = (selectedAccount, parameters) => {
 }
 
 
-const createBackwardAuction = async (selectedAccount, parameters) => {
+const createBackwardAuction = (selectedAccount, parameters) => {
     const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
     let backwardAuctionContract = new web3.eth.Contract(backwardAuctionBuild.abi);
     backwardAuctionContract.options.data = backwardAuctionBuild.bytecode;
-    await backwardAuctionContract.deploy({
+    return backwardAuctionContract.deploy({
         arguments: [parseInt(parameters.biddingPeriod),
             parameters.buyerAddress,
             parseInt(parameters.maxBid),
@@ -193,6 +210,6 @@ const createBackwardAuction = async (selectedAccount, parameters) => {
             from: selectedAccount,
             gas: 6721975,
             gasPrice: '2',
-            value: 5
+            value: parseInt(parameters.maxBid)
         })
 }
