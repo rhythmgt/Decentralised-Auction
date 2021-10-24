@@ -5,16 +5,18 @@ let selectedAccount;
 
 let isInitialised = false;
 
+const deploy_addr = "0x0050785b8816C8dEca10DA5Ee8510e81cE98Ff99";
+
 const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:9545'));
 let forwardAuctionContract = new web3.eth.Contract(forwardAuctionBuild.abi);
 
 export const init = async () =>{
 	forwardAuctionContract.options.data = forwardAuctionBuild.bytecode;
 	forwardAuctionContract.deploy({
-		arguments: [1000, "0x580a30e798b815f869867f67e8389ae118a6e774", 0, 0, false]
+		arguments: [1000, deploy_addr , 0, 0, true]
 	})
 	.send({
-		from: '0x580a30e798b815f869867f67e8389ae118a6e774',
+		from: deploy_addr,
 		gas: 6721975,
 		gasPrice: '2'
 	})
@@ -72,9 +74,27 @@ export const bid = async (bidVal) => {
 	console.log(tx);
 	})
 	.catch((err) =>{
-		console.log(err);
+		console.log("Bidding Error", err);
 	});
 };
+
+export const incrementBid = async (incrementValue) => {
+	if (!isInitialised){
+		await init();
+	}
+
+	console.log('Trying increment', incrementValue);
+	return forwardAuctionContract.methods
+	.incrementBid()
+	.send({from: selectedAccount, value: incrementValue})
+	.then((tx)=>{
+	console.log(tx);
+	})
+	.catch((err) =>{
+		console.log(err);
+	});
+}
+
 
 export const getHighestBid = async () => {
 	if (!isInitialised){
@@ -92,4 +112,55 @@ export const getHighestBid = async () => {
 		.catch((err) =>{
 			console.log(err);
 		});
+}
+
+export const withdrawBid = async() => {
+	if (!isInitialised){
+		await init();
+	}
+
+	console.log('Trying withdraw');
+	return forwardAuctionContract.methods
+	.withdraw()
+	.send({from: selectedAccount})
+	.then((tx)=>{
+	console.log(tx);
+	})
+	.catch((err) =>{
+		console.log(err);
+	});
+}
+
+export const getPendingReturns = async() => {
+	if (!isInitialised){
+		await init();
+	}
+
+	console.log('Fetching pending return');
+	return forwardAuctionContract.methods
+	.pendingReturns(selectedAccount)
+	.call({from: selectedAccount})
+	.then((tx)=>{
+	console.log(tx);
+	})
+	.catch((err) =>{
+		console.log(err);
+	});
+}
+
+export const auctionEnd = async() => {
+	if (!isInitialised){
+		await init();
+	}
+
+	console.log('Trying to end auction');
+	return forwardAuctionContract.methods
+	.auctionEnd()
+	.send({from: selectedAccount})
+	.then((tx)=>{
+	console.log(tx);
+	})
+	.catch((err) =>{
+		console.log(err);
+	});
 }

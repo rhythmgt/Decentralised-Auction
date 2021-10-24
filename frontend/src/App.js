@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import { useEffect } from 'react';
-import { init, bid, getHighestBid } from './Web3Client';
+import { init, bid, getHighestBid,  incrementBid, withdrawBid, getPendingReturns, auctionEnd } from './Web3Client';
 function App() {
 
 	useEffect(() => {
@@ -9,7 +9,7 @@ function App() {
 	}, []);
 
 	var bidVal = 0;
-
+	var incrBidVal = 0;
   return (
     <div className="App">
       <header className="App-header">
@@ -25,10 +25,23 @@ function App() {
 				Value:
 				<input type="number"  onChange={(e)=>{bidVal = e.target.value}}/>
 			</label>
-			<input type="submit" value="Submit" />
+			<input type="submit" value="Bid" />
+		</form>
+		<form onSubmit={
+			(e)=>{
+			e.preventDefault();
+			incrementBid(incrBidVal);} }>
+			<label>
+				Value:
+				<input type="number"  onChange={(e)=>{incrBidVal = e.target.value}}/>
+			</label>
+			<input type="submit" value="Increment Bid" />
 		</form>
 		
 		<button onClick = {() => getHighestBid()}>Highest Bid</button>
+		<button onClick = {() => withdrawBid()}>Withdraw Bid</button>
+		<button onClick = {() => getPendingReturns()}>Pending Returns</button>
+		<button onClick = {() => auctionEnd()}>End Auction</button>
 		
         <a
           className="App-link"
