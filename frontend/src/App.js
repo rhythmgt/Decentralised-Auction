@@ -5,6 +5,7 @@ import NavBar from "./NavBar";
 import Home from "./Home";
 import StartAuction from "./StartAuction";
 import ViewAuction from "./ViewAuction";
+import IpfsConnect from "./ipfsConnect";
 
 function App() {
     // const [login, setLogin] = useState(false);
@@ -14,6 +15,7 @@ function App() {
     return (
         <Router>
             <NavBar selectedAccount={selectedAccount} setSelectedAccount={setSelectedAccount}/>
+            {/*<IpfsConnect/>*/}
             <div className="content">
                 <Switch>
                     <Route exact path="/">

@@ -2,8 +2,7 @@ import React, {useEffect, useState} from "react";
 import Web3 from 'web3';
 import forwardAuctionBuild from 'contracts/forwardAuction.json';
 import backwardAuctionBuild from 'contracts/backwardAuction.json';
-import {Link, useHistory} from "react-router-dom"
-import {Button, ButtonGroup, Grid} from "@mui/material";
+import {Button, Grid} from "@mui/material";
 import TextField from '@mui/material/TextField';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -12,9 +11,14 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import CircularProgress from '@mui/material/CircularProgress';
 import Chip from "@mui/material/Chip";
+import IPFS from 'ipfs-api';
 
 
 const StartAuction = (props) => {
+    const ipfs = new IPFS({
+        host: 'ipfs.infura.io',
+        port: 5001, protocol: 'https'
+    });
     const [isCreatingAuction, setIsCreatingAuction] = useState(false)
     const [account, setAccount] = useState(false)
     const [auctionCreated, setAuctionCreated] = useState(false)
@@ -25,10 +29,26 @@ const StartAuction = (props) => {
         auctionParameters[e.target.id] = e.target.value
         setAuctionParameter({...auctionParameters})
     }
+    const [buffer, setBuffer] = useState(false);
+
+    const onChangeFile = e => {
+        const reader = new window.FileReader();
+        reader.readAsArrayBuffer(e.target.files[0]);
+        reader.onloadend = async () => setBuffer(await Buffer.from(reader.result));
+    };
+
     const createAuction = async e => {
-        console.log(auctionParameters)
-        let promise;
         setIsCreatingAuction(true);
+        if (!buffer) {
+            alert("Please select a file before starting the Auction")
+            setIsCreatingAuction(false)
+            return
+        }
+        let ipfsHash = await ipfs.add(buffer);
+        auctionParameters["auctionFileHash"] = "https://gateway.ipfs.io/ipfs/" + ipfsHash[0].hash;
+        setAuctionParameter({...auctionParameters});
+        console.log(auctionParameters);
+        let promise;
         if (auctionType === "forward") {
             promise = createForwardAuction(props.selectedAccount, auctionParameters)
         } else if (auctionType === "backward") {
@@ -45,8 +65,6 @@ const StartAuction = (props) => {
                 console.log(err);
                 alert(err)
             });
-
-
     }
     const auctionChange = e => {
         setAuctionType(e.target.value)
@@ -70,6 +88,7 @@ const StartAuction = (props) => {
     const reset = e => {
         setAuctionType(null);
         setAuctionCreated(false);
+        setBuffer(false);
     }
     useEffect(() => {
         setAccount(props.selectedAccount)
@@ -86,14 +105,14 @@ const StartAuction = (props) => {
     return (
         <div id="homesec">
             {auctionCreated &&
-            <div className="centerButton" style={{textAlign:"center"}}>
-                <p  style={{fontSize: "25px", fontWeight: "0", margin:"0em"}}>Auction created<br/>Contract
+            <div className="centerButton" style={{textAlign: "center"}}>
+                <p style={{fontSize: "25px", fontWeight: "0", margin: "0em"}}>Auction created<br/>Contract
                     Address -<br/></p>
-                    <Chip
-                        label={auctionAddress}
-                        title={auctionAddress}
-                        style={{fontSize:"1.5rem", padding:"25px 16px", margin:"0.75em"}}
-                    /><br/>
+                <Chip
+                    label={auctionAddress}
+                    title={auctionAddress}
+                    style={{fontSize: "1.5rem", padding: "25px 16px", margin: "0.75em"}}
+                /><br/>
                 <Button variant="contained" onClick={reset}>
                     Create another Auction
                 </Button>
@@ -133,6 +152,14 @@ const StartAuction = (props) => {
                                    onChange={handleFormChange}/>
                     </Grid>
                     <Grid item margin={'10px'}>
+                        <Grid container
+                              style={{justifyContent: "center", width: "fit-content", transform: "translate(-15%)"}}>
+                            <Grid item xs={5}>
+                                <input type="file" onChange={onChangeFile}/>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid item margin={'10px'}>
                         <Button variant="contained" onClick={createAuction}>
                             Create Auction
                         </Button>
@@ -156,6 +183,14 @@ const StartAuction = (props) => {
                     <Grid item margin={'10px'}>
                         <TextField id="minDecrement" label="minDecrement" type="number" variant="outlined"
                                    onChange={handleFormChange}/>
+                    </Grid>
+                    <Grid item margin={'10px'}>
+                        <Grid container
+                              style={{justifyContent: "center", width: "fit-content", transform: "translate(-15%)"}}>
+                            <Grid item xs={5}>
+                                <input type="file" onChange={onChangeFile}/>
+                            </Grid>
+                        </Grid>
                     </Grid>
                     <Grid item margin={'10px'}>
                         <Button variant="contained" onClick={createAuction}>
@@ -185,14 +220,14 @@ const createForwardAuction = (selectedAccount, parameters) => {
             parameters.sellerAddress,
             parseInt(parameters.minBid),
             parseInt(parameters.minIncrement),
-            allowWithdraw]
+            allowWithdraw,
+            parameters.auctionFileHash]
     })
         .send({
             from: selectedAccount,
             gas: 6721975,
             gasPrice: '2'
         })
-
 }
 
 
@@ -204,7 +239,8 @@ const createBackwardAuction = (selectedAccount, parameters) => {
         arguments: [parseInt(parameters.biddingPeriod),
             parameters.buyerAddress,
             parseInt(parameters.maxBid),
-            parseInt(parameters.minDecrement)]
+            parseInt(parameters.minDecrement),
+            parameters.auctionFileHash],
     })
         .send({
             from: selectedAccount,

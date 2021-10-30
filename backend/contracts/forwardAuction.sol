@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
 
-pragma solidity ^0.8.4;
+pragma solidity ^0.8.0;
 
 contract forwardAuction{
 
@@ -10,6 +10,7 @@ contract forwardAuction{
 	uint minimumIncrement = 1; // refers to 1 percent
 	address public highestBidder;
 	uint public highestBid = 0;
+	string public auctionFile = "None";
 
 	bool auctionEnded = false;
 	bool withdrawAllowed = false;
@@ -39,12 +40,13 @@ contract forwardAuction{
 	/// Withdraw Not allowed before Auction End
 	error WithdrawNotAllowed();
 
-	constructor( uint biddingPeriod, address payable sellerAddress, uint minBid, uint minIncrement, bool allowWithdraw){
+	constructor( uint biddingPeriod, address payable sellerAddress, uint minBid, uint minIncrement, bool allowWithdraw, string memory file){
 		seller = sellerAddress;
 		auctionEndTime = block.timestamp + biddingPeriod;
 		minimumBid = minBid;
 		minimumIncrement = minIncrement;
 		withdrawAllowed = allowWithdraw;
+	    auctionFile = file;
 	}
 
 	function bid() external payable{

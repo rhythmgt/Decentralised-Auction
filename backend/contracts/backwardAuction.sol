@@ -11,11 +11,12 @@ contract backwardAuction{
 	uint public lowestBid;
 	uint public minimumDecrement;
 	bool auctionEnded = false;
+	string public auctionFile = "None";
 
 	/// Auction has already ended
 	error AuctionAlreadyEnded();
 
-	constructor( uint biddingPeriod, address payable buyerAddress, uint maxBid, uint minDecrement) payable{
+	constructor( uint biddingPeriod, address payable buyerAddress, uint maxBid, uint minDecrement, string memory file) payable{
 		require(msg.value == maxBid);
 		require(msg.sender == buyerAddress);
 		buyer = buyerAddress;
@@ -23,6 +24,7 @@ contract backwardAuction{
 		lowestBid = maxBid;
 		startBid = maxBid;
 		minimumDecrement = minDecrement;
+		auctionFile = file;
 	}
 
 	modifier onlyBuyer(){
