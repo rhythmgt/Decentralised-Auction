@@ -13,10 +13,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
+        
 		<form onSubmit={
 			(e)=>{
 			e.preventDefault();
@@ -43,14 +40,7 @@ function App() {
 		<button onClick = {() => getPendingReturns()}>Pending Returns</button>
 		<button onClick = {() => auctionEnd()}>End Auction</button>
 		
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        
       </header>
 	  
     </div>
