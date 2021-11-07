@@ -6,6 +6,7 @@ import Home from "./Home";
 import StartAuction from "./StartAuction";
 import ViewAuction from "./ViewAuction";
 import IpfsConnect from "./ipfsConnect";
+import LoadAuction from "./LoadAuction";
 
 function App() {
     // const [login, setLogin] = useState(false);
@@ -24,8 +25,11 @@ function App() {
                     <Route exact path="/startauction">
                         <StartAuction selectedAccount={selectedAccount}/>
                     </Route>
-                    <Route exact path="/viewauction">
+                    <Route exact path="/viewauction/:add/:type">
                         <ViewAuction/>
+                    </Route>
+                    <Route exact path="/loadauction">
+                        <LoadAuction/>
                     </Route>
                 </Switch>
             </div>

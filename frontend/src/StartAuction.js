@@ -94,9 +94,7 @@ const StartAuction = (props) => {
         setAccount(props.selectedAccount)
     }, [props.selectedAccount]);
     if (props.selectedAccount === false) {
-        return (<div id="homesec">
-            <p className="centerButton"><h1>Please connect with a wallet!!!!</h1></p>
-        </div>);
+        return (<div id="homesec"><h1 className="centerButton">Please connect with a wallet!!!!</h1></div>);
     }
     if (isCreatingAuction) {
         return (<div id="homesec"><p className="centerButton"><CircularProgress size="60px" thickness={4}
