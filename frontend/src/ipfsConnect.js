@@ -1,28 +1,15 @@
 import React, {useState} from "react";
-import {Link, useHistory} from "react-router-dom"
-import {Button, ButtonGroup, Grid} from "@mui/material";
 import IPFS from 'ipfs-api';
 
 const IpfsConnect = (props) => {
-    // const IPFS = require('ipfs-api');
     const ipfs = new IPFS({
         host: 'ipfs.infura.io',
         port: 5001, protocol: 'https'
     });
-
-    // console.log(ipfs)
-
-    const [file, setFile] = useState('');
     const [buffer, setBuffer] = useState('');
     const [filename, setFilename] = useState('Upload your code file here');
-    const [featurename, setFeaturename] = useState('Upload your code file here');
-
-    const onChangeName = e => {
-        setFeaturename(e.target.value)
-    };
 
     const onChangeFile = e => {
-        setFile(e.target.files[0]);
         console.log(e.target.files[0]);
         setFilename(e.target.files[0].name);
         const reader = new window.FileReader();
