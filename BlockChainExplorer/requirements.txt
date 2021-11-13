@@ -37,7 +37,7 @@ protobuf==3.19.1
 pycryptodome==3.11.0
 pymongo==3.12.1
 pyrsistent==0.18.0
-pywin32==302
+pywin32==302;platform_system == "Windows"
 requests==2.26.0
 rlp==2.0.1
 six==1.16.0

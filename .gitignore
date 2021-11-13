@@ -147,10 +147,13 @@ dist
 
 /frontend/.idea
 
+# package-json lock
+/frontend/package-lock.json
 
 # backend build
 
 /backend/build/
 /BlockChainExplorer/.idea
 /BlockChainExplorer/venv
+/BlockChainExplorer/env
 /BlockChainExplorer/__pycache__/

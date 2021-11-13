@@ -24,7 +24,7 @@ function App() {
                         <ViewAuction/>
                     </Route>
                     <Route exact path="/loadauction">
-                        <LoadAuction/>
+                        <LoadAuction selectedAccount={selectedAccount}/>
                     </Route>
                 </Switch>
             </div>
