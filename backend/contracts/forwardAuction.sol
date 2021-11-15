@@ -8,13 +8,13 @@ contract forwardAuction{
 	uint public auctionEndTime;
 	uint minimumBid = 0;
 	uint minimumIncrement = 1; // refers to 1 percent
-	address public highestBidder;
+	address private highestBidder;
 	uint public highestBid = 0;
 	string public auctionFile = "None";
 
 	bool auctionEnded = false;
 	bool withdrawAllowed = false;
-	mapping(address => uint) public pendingReturns;
+	mapping(address => uint) private pendingReturns;
 
 	/// Auction has already ended
 	error AuctionAlreadyEnded();
@@ -135,5 +135,15 @@ contract forwardAuction{
 		withdrawAllowed = true;
 		payable(seller).transfer(highestBid);
 
+	}
+
+	function previousBid() external view returns (uint){
+		if (msg.sender==highestBidder){
+			return highestBid;
+		}
+		else{
+			return pendingReturns[msg.sender];
+
+		}
 	}
 }

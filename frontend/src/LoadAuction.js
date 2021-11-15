@@ -16,7 +16,8 @@ const LoadAuction = (props) => {
 	const [contractAddress, setContractAddress] = useState("");
 	const [auctionLoaded, setAuctionLoaded] = useState(false);
 	const [contractInstance, setContractInstance] = useState(null);
-	
+	const [account, setAccount] = useState(false)
+
 	const auctionChange = e => {
         setAuctionType(e.target.value);
     }
@@ -36,7 +37,14 @@ const LoadAuction = (props) => {
 			console.log("Invalid  auction type");
 			return;
 		}
-		setContractInstance(new web3.eth.Contract(jsonFile.abi, contractAddress));
+		try{
+			setContractInstance(new web3.eth.Contract(jsonFile.abi, contractAddress));
+
+		}
+		catch (e){
+			console.log("Invalid address");
+			return;
+		}
 		// contractInstance.methods.auctionEndTime().call({from: props.selectedAccount}).then((tx) => {
 		// 	console.log("Auction End time:", tx);
 		// })
@@ -45,12 +53,18 @@ const LoadAuction = (props) => {
 		// 	});
 		setAuctionLoaded(true);
 	}
+	useEffect(() => {
+        setAccount(props.selectedAccount)
+    }, [props.selectedAccount]);
+    if (props.selectedAccount === false) {
+        return (<div id="homesec"><h1 className="centerButton">Please connect with a wallet!!!!</h1></div>);
+    }
 	if (auctionLoaded){
-		return <ViewAuction contractInstance={contractInstance}/>
+		return <ViewAuction contractInstance={contractInstance} selectedAccount={account}/>
 	}
+	
     return (
         <div id="homesec">
-            <p className="centerButton">Load Auction</p>
 			<Grid container direction="column" alignItems="center" className="centerButton">
                 <Grid item margin={'10px'}>
                     <FormControl>

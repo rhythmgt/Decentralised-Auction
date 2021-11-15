@@ -53,9 +53,9 @@ export const bid = async (bidVal) => {
 };
 
 export const getHighestBid = async () => {
-    if (!isInitialised) {
-        await init();
-    }
+    // if (!isInitialised) {
+    //     await init();
+    // }
     forwardAuctionContract.methods.highestBid().call({from: selectedAccount}).then((tx) => {
         console.log(tx);
     })
