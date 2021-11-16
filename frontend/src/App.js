@@ -3,7 +3,7 @@ import {useState} from "react";
 import NavBar from "./NavBar";
 import Home from "./Home";
 import StartAuction from "./StartAuction";
-import ViewAuction from "./ViewAuction";
+// import ViewAuction from "./ViewAuction";
 import LoadAuction from "./LoadAuction";
 
 function App() {
@@ -20,9 +20,9 @@ function App() {
                     <Route exact path="/startauction">
                         <StartAuction selectedAccount={selectedAccount}/>
                     </Route>
-                    <Route exact path="/viewauction/:add/:type">
+                    {/* <Route exact path="/viewauction/:add/:type">
                         <ViewAuction/>
-                    </Route>
+                    </Route> */}
                     <Route exact path="/loadauction">
                         <LoadAuction selectedAccount={selectedAccount}/>
                     </Route>

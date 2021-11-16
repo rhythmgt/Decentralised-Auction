@@ -9,7 +9,8 @@ import TextField from '@mui/material/TextField';
 import forwardAuctionBuild from 'contracts/forwardAuction.json';
 import backwardAuctionBuild from 'contracts/backwardAuction.json';
 import Web3 from 'web3';
-import ViewAuction from "./ViewAuction";
+import ViewForwardAuction from "./ViewForwardAuction";
+import ViewBackwardAuction from "./ViewBackwardAuction";
 
 const LoadAuction = (props) => {
 	const [auctionType, setAuctionType] = useState(null);
@@ -60,7 +61,13 @@ const LoadAuction = (props) => {
         return (<div id="homesec"><h1 className="centerButton">Please connect with a wallet!!!!</h1></div>);
     }
 	if (auctionLoaded){
-		return <ViewAuction contractInstance={contractInstance} selectedAccount={account}/>
+		if (auctionType==="forward"){
+			return <ViewForwardAuction contractInstance={contractInstance} selectedAccount={account}/>
+		}
+		else{
+			return <ViewBackwardAuction contractInstance={contractInstance} selectedAccount={account}/>
+			
+		}
 	}
 	
     return (

@@ -8,7 +8,7 @@ import { forwardAuctionClient } from "./forwardAuctionClient";
 // increment  bid
 // withdraw bid
 
-const ViewAuction = (props) => {
+const ViewForwardAuction = (props) => {
 
 	const [highestBid, setHighestBid] = useState(0);
 	const [previousBid, setPreviousBid] = useState(0);
@@ -150,4 +150,4 @@ const ViewAuction = (props) => {
         </div>
     );
 };
-export default ViewAuction;
+export default ViewForwardAuction;
