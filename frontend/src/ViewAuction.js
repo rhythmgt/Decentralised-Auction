@@ -15,7 +15,7 @@ const ViewAuction = (props) => {
 	const [bidVal, setBidVal] = useState(0);
 	const [bidIncrementVal, setBidIncrementVal] = useState(0);
 	const [documentLink, setDocumentLink] = useState(null);
-	
+	const [isSeller, setIsSeller] = useState(false);
 	const client = new forwardAuctionClient(props.contractInstance, props.selectedAccount);
 	const bid = (e) =>{
 		console.log("Bidding from view auction", bidVal)
@@ -67,6 +67,11 @@ const ViewAuction = (props) => {
 			err => console.log(err)
 		)
 	}
+
+	const endAuction = (e) => {
+		console.log("Mai khatam kardunga")
+	}
+
  	props.contractInstance.methods.auctionEndTime().call({from: props.selectedAccount}).then((tx) => {
 		console.log("Auction End time:", tx);
 	})
@@ -84,6 +89,12 @@ const ViewAuction = (props) => {
 		client.getDocumentLink().then(
 			dl=> setDocumentLink(dl)
 		)
+		client.getSeller().then(
+			seller=>{
+				console.log("seller", seller, props.selectedAccount);
+				setIsSeller(props.selectedAccount.toLowerCase()===seller.toLowerCase());
+			}
+		)
 	}, []);
 	
     return (
@@ -94,45 +105,46 @@ const ViewAuction = (props) => {
 					Previous Bid : {previousBid}	
 				</Grid>
 				<Grid>
-				{client.isSeller()?
-					<Button variant="contained" onClick= {(e)=>{withdrawBid(e)}}>
-						End Auction
-					</Button>
-					:
-					<Grid>
-						<Grid  container direction="row" alignItems="center">
-							<Grid item margin={'10px'}>
-								<TextField id="bidVal" label="Bid Value" type = "number" variant="outlined"
-									onChange= {(e) => {setBidVal(e.target.value)}}   />
-							</Grid>
-							<Grid item margin={'10px'}>
-								<Button variant="contained" onClick= {(e)=>{bid(e)}}>
-									Bid
+					Product Description Document : <a href = {documentLink}>Link</a>
+				</Grid>
+				<Grid>
+					{isSeller?
+						<Button variant="contained" onClick= {(e)=>{endAuction(e)}}>
+							End Auction
+						</Button>
+						:
+					previousBid>0?
+						<Grid container direction="column" alignItems="center">
+							<Grid  container direction="row" alignItems="center">
+								<Grid item margin={'10px'}>
+									<TextField id="bidIncrVal" label="Bid Increment Value" type = "number" variant="outlined"
+										onChange= {(e) => {setBidIncrementVal(e.target.value)}}   />
+								</Grid>
+								<Grid item margin={'10px'}>
+									<Button variant="contained" onClick= {(e)=>{incrementBid(e)}}>
+										Increment Bid
+									</Button>
+								</Grid>
+							</Grid> 
+							<Grid>
+								<Button variant="contained" onClick= {(e)=>{withdrawBid(e)}}>
+									Withdraw Bid
 								</Button>
 							</Grid>
-						</Grid> 
+						</Grid>
+						:
 						<Grid  container direction="row" alignItems="center">
-							<Grid item margin={'10px'}>
-								<TextField id="bidIncrVal" label="Bid Increment Value" type = "number" variant="outlined"
-									onChange= {(e) => {setBidIncrementVal(e.target.value)}}   />
-							</Grid>
-							<Grid item margin={'10px'}>
-								<Button variant="contained" onClick= {(e)=>{incrementBid(e)}}>
-									Increment Bid
-								</Button>
-							</Grid>
-						</Grid> 
-						<Grid>
-							<Button variant="contained" onClick= {(e)=>{withdrawBid(e)}}>
-								Withdraw Bid
-							</Button>
-						</Grid>
-						<Grid>
-							Product Description Document : <a href = {documentLink}>Link</a>
-						</Grid>
-					</Grid>
-				
-				}
+								<Grid item margin={'10px'}>
+									<TextField id="bidVal" label="Bid Value" type = "number" variant="outlined"
+										onChange= {(e) => {setBidVal(e.target.value)}}   />
+								</Grid>
+								<Grid item margin={'10px'}>
+									<Button variant="contained" onClick= {(e)=>{bid(e)}}>
+										Bid
+									</Button>
+								</Grid>
+						</Grid>				
+					}
 				</Grid>
 			</Grid>
         </div>

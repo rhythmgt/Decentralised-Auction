@@ -1,18 +1,11 @@
 export class forwardAuctionClient{
 	constructor(contract, address){
 		this.forwardAuctionContract = contract;
-		this.selectedAccount = address;
-		this.forwardAuctionContract.methods.seller().call({from: this.selectedAccount}).then((tx) => {
-			this.seller =  tx;
-		})
-		.catch((err) => {
-			console.log(err);
-		});
+		this.selectedAccount = address;		
 	}
 
-	isSeller = ()=>{
-		console.log(this.selectedAccount, this.seller);
-		return this.selectedAccount === this.seller ;
+	getSeller = async ()=>{
+		return await this.forwardAuctionContract.methods.seller().call({from: this.selectedAccount});
 	}
 
 	getDocumentLink = async ()=>{
