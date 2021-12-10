@@ -102,19 +102,22 @@ const ViewForwardAuction = (props) => {
 			<Grid container direction="column" alignItems="center" className="centerButton" >
 				<Grid item margin={'10px'}>
 					Current Highest Bid : {highestBid} <br/>
-					Previous Bid : {previousBid}	
-				</Grid>
-				<Grid>
 					Product Description Document : <a href = {documentLink}>Link</a>
+					
 				</Grid>
+
 				<Grid>
 					{isSeller?
+					
 						<Button variant="contained" onClick= {(e)=>{endAuction(e)}}>
 							End Auction
 						</Button>
 						:
 					previousBid>0?
-						<Grid container direction="column" alignItems="center">
+						<Grid container direction="column" alignItems="center" >
+							<Grid>
+								Previous Bid : {previousBid}	
+							</Grid>
 							<Grid  container direction="row" alignItems="center">
 								<Grid item margin={'10px'}>
 									<TextField id="bidIncrVal" label="Bid Increment Value" type = "number" variant="outlined"
