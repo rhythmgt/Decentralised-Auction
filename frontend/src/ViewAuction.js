@@ -10,6 +10,7 @@ import backwardAuctionBuild from 'contracts/backwardAuction.json';
 const ViewAuction = (props) => {
     const {add, type} = useParams();
 	const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+	web3.eth.handleRevert = true
 	if (props.selectedAccount === false) {
         return (<div id="homesec"><h1 className="centerButton">Please connect with a wallet!!!!</h1></div>);
     }

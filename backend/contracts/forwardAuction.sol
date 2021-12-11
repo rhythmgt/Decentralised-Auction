@@ -12,7 +12,7 @@ contract forwardAuction{
 	uint public highestBid = 0;
 	string public auctionFile = "None";
 
-	bool auctionEnded = false;
+	bool public auctionEnded = false;
 	bool withdrawAllowed = false;
 	mapping(address => uint) private pendingReturns;
 

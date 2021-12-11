@@ -21,6 +21,14 @@ export class forwardAuctionClient{
 		return await this.forwardAuctionContract.methods.previousBid().call({from: this.selectedAccount});
 	}
 
+	getIsEnded = async () => {
+		return await this.forwardAuctionContract.methods.auctionEnded().call({from: this.selectedAccount});
+	}
+
+	getEndTime = async () =>{
+		return await this.forwardAuctionContract.methods.auctionEndTime().call({from: this.selectedAccount});
+	}
+
 	bid = async (bidVal) => {
 	
 		console.log('Trying bid', bidVal);

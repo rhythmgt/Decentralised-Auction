@@ -16,6 +16,10 @@ const ViewForwardAuction = (props) => {
 	const [bidIncrementVal, setBidIncrementVal] = useState(0);
 	const [documentLink, setDocumentLink] = useState(null);
 	const [isSeller, setIsSeller] = useState(false);
+	const [isEnded, setIsEnded] = useState(false);
+	const [isLive, setIsLive] = useState(false);
+	
+
 	const client = new forwardAuctionClient(props.contractInstance, props.selectedAccount);
 	const bid = (e) =>{
 		console.log("Bidding from view auction", bidVal)
@@ -69,7 +73,22 @@ const ViewForwardAuction = (props) => {
 	}
 
 	const endAuction = (e) => {
-		console.log("Mai khatam kardunga")
+		client.endAuction().then(
+			tx=> {console.log(tx);
+			return client.getIsEnded()}
+		)
+		.then(
+			status => {
+				setIsEnded(status)
+				return client.getEndTime()
+			}
+		)
+		.then(
+			endTime=>{
+				const currTime = Date.now()
+				setIsLive(currTime>=endTime)
+			}
+		)
 	}
 
  	props.contractInstance.methods.auctionEndTime().call({from: props.selectedAccount}).then((tx) => {
@@ -95,6 +114,19 @@ const ViewForwardAuction = (props) => {
 				setIsSeller(props.selectedAccount.toLowerCase()===seller.toLowerCase());
 			}
 		)
+		client.getIsEnded()
+		.then(
+			status => setIsEnded(status)
+		)
+		.catch(
+			err=> console.log("error", err)
+		)
+		client.getEndTime().then(
+			endTime=>{
+				const currTime = Date.now()
+				setIsLive(currTime>=endTime)
+			}
+		)
 	}, []);
 	
     return (
@@ -107,13 +139,22 @@ const ViewForwardAuction = (props) => {
 				</Grid>
 
 				<Grid>
-					{isSeller?
-					
+					{
+					(isSeller && isEnded)?
+						<Grid>Auction has already Ended</Grid>
+						:
+					(isSeller && isLive)?
+						<Grid>Auction is currently Live</Grid>
+						:
+					isSeller?
 						<Button variant="contained" onClick= {(e)=>{endAuction(e)}}>
 							End Auction
 						</Button>
 						:
-					previousBid>0?
+					isLive===false?
+					<Grid>Bidding period has ended</Grid>
+						:
+					(previousBid>0)?
 						<Grid container direction="column" alignItems="center" >
 							<Grid>
 								Previous Bid : {previousBid}	
