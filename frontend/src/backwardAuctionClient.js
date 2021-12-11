@@ -19,6 +19,35 @@ export class backwardAuctionClient{
 		
 	}
 
+	getUserDescDocs = async () => {
+		return await this.backwardAuctionContract.methods.getPreBidParticipants().call({from: this.selectedAccount});
+	}
+
+	getAuctionPhase = async () => {
+		return await this.backwardAuctionContract.methods.auctionPhase().call({from: this.selectedAccount});
+
+	}
+	uploadUserDescription = async (url) =>{
+		return await this.backwardAuctionContract.methods
+		.uploadDescription(url)
+		.send({from: this.selectedAccount, gas: 200000})
+		.then((tx)=>{
+		console.log(tx);
+		})
+		.catch((err) =>{
+			console.log(err);
+		});
+		// return await this.backwardAuctionContract.methods
+		// .uploadDescription(url)
+		// .estimateGas({from: this.selectedAccount})
+		// .then((tx)=>{
+		// console.log(tx);
+		// })
+		// .catch((err) =>{
+		// 	console.log(err);
+		// })
+	}
+
 	bid = async (bidVal) => {
 	
 		console.log('Trying bid', bidVal);
@@ -31,7 +60,7 @@ export class backwardAuctionClient{
 	auctionEnd = async() => {
 		
 		console.log('Trying to end auction');
-		return this.backwardAuctionContract.methods
+		return await this.backwardAuctionContract.methods
 		.auctionEnd()
 		.send({from: this.selectedAccount})
 		.then((tx)=>{

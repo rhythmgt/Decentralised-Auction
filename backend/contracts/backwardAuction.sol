@@ -6,21 +6,35 @@ contract backwardAuction{
 
 	address payable public buyer;
     uint public startBid;
+	uint public preBidFilteringEndTime;
 	uint public auctionEndTime;
+	uint biddingPeriod;
+	address[] public preBidParticipants;
+	mapping (address=>string) public userDesc;
 	address public lowestBidder;
+	mapping (address=>bool) public allowedAddresses;
 	uint public lowestBid;
 	uint public minimumDecrement;
-	bool auctionEnded = false;
+	uint public auctionPhase=0;
+	bool public auctionEnded = false;
 	string public auctionFile = "None";
 
 	/// Auction has already ended
 	error AuctionAlreadyEnded();
 
-	constructor( uint biddingPeriod, address payable buyerAddress, uint maxBid, uint minDecrement, string memory file) payable{
+	/// PreFiltering Phase Is Over
+	error PreBidFilteringPhaseIsOver();
+
+	/// PreFiltering Phase Is Not Over
+	error PreBidFilteringPhaseIsNotOver();
+
+	constructor(uint filteringPeriod, uint biddingPd, address payable buyerAddress, uint maxBid, uint minDecrement, string memory file) payable{
 		require(msg.value == maxBid);
 		require(msg.sender == buyerAddress);
 		buyer = buyerAddress;
-		auctionEndTime = block.timestamp + biddingPeriod;
+		preBidFilteringEndTime = block.timestamp + filteringPeriod;
+		// auctionEndTime = block.timestamp + biddingPeriod;
+		biddingPeriod = biddingPd;
 		lowestBid = maxBid;
 		startBid = maxBid;
 		minimumDecrement = minDecrement;
@@ -32,6 +46,28 @@ contract backwardAuction{
         _;
     }
 
+	function uploadDescription( string calldata description) external{
+		if (block.timestamp>preBidFilteringEndTime){
+			revert PreBidFilteringPhaseIsOver();
+		}
+		preBidParticipants.push(msg.sender);
+		userDesc[msg.sender] = description;
+	}
+
+	function getPreBidParticipants()public view returns( address  [] memory){
+    	return preBidParticipants;
+	}
+
+	function preBidFilter (address[] calldata selectedAccounts) external onlyBuyer(){
+		if (block.timestamp<preBidFilteringEndTime){
+			revert PreBidFilteringPhaseIsNotOver();
+		}
+		for (uint j=0; j<selectedAccounts.length; j++){
+			allowedAddresses[selectedAccounts[j]] = true;
+		}
+		auctionPhase = 1;
+		auctionEndTime = block.timestamp + biddingPeriod;
+	}
 
 	function bidding(address addr, uint biddingAmount) internal returns (bool){
 		if (block.timestamp > auctionEndTime || biddingAmount > lowestBid - minimumDecrement){

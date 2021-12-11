@@ -170,6 +170,10 @@ const StartAuction = (props) => {
                         <TextField id="biddingPeriod" label="biddingPeriod" type="number" variant="outlined"
                                    onChange={handleFormChange}/>
                     </Grid>
+					<Grid item margin={'10px'}>
+                        <TextField id="preFilteringPeriod" label="preFilteringPeriod" type="number" variant="outlined"
+                                   onChange={handleFormChange}/>
+                    </Grid>
                     <Grid item margin={'10px'}>
                         <TextField id="buyerAddress" label="buyerAddress" variant="outlined" value={account}
                                    onChange={handleFormChange}/>
@@ -234,7 +238,8 @@ const createBackwardAuction = (selectedAccount, parameters) => {
     let backwardAuctionContract = new web3.eth.Contract(backwardAuctionBuild.abi);
     backwardAuctionContract.options.data = backwardAuctionBuild.bytecode;
     return backwardAuctionContract.deploy({
-        arguments: [parseInt(parameters.biddingPeriod),
+        arguments: [parseInt(parameters.preFilteringPeriod),
+			parseInt(parameters.biddingPeriod),
             parameters.buyerAddress,
             parseInt(parameters.maxBid),
             parseInt(parameters.minDecrement),
