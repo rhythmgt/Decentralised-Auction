@@ -21,6 +21,13 @@ export class backwardAuctionClient{
 
 	getUserDescDocs = async () => {
 		return await this.backwardAuctionContract.methods.getPreBidParticipants().call({from: this.selectedAccount});
+		
+		
+	}
+
+	getDescriptions = async (p)=>{
+		return await this.backwardAuctionContract.methods.userDesc(p).call({from: this.selectedAccount})
+			
 	}
 
 	getAuctionPhase = async () => {
@@ -46,6 +53,19 @@ export class backwardAuctionClient{
 		// .catch((err) =>{
 		// 	console.log(err);
 		// })
+	}
+
+	preBidFilter = async (arr) => {
+		return await this.backwardAuctionContract.methods
+		.preBidFilter(arr)
+		.send({from: this.selectedAccount})
+		.then((tx)=>{
+		console.log(tx);
+		})
+		.catch((err) =>{
+			console.log(err);
+		});
+
 	}
 
 	bid = async (bidVal) => {

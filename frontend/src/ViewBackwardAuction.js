@@ -30,7 +30,17 @@ const ViewBackwardAuction = (props) => {
 
 
 	const endAuction = (e) => {
-		console.log("Mai khatam kardunga")
+		client.auctionEnd().then(
+			tx=>{
+				console.log(tx);
+				return client.getAuctionPhase()
+			}
+		)
+		.then(
+			phase=>{
+				console.log("Phase:", phase);
+				setAuctionPhase(phase)}
+		)
 	}
 
  	props.contractInstance.methods.auctionEndTime().call({from: props.selectedAccount}).then((tx) => {
