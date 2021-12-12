@@ -19,10 +19,8 @@ export class backwardAuctionClient{
 		
 	}
 
-	getUserDescDocs = async () => {
+	getPreBidParticipants = async () => {
 		return await this.backwardAuctionContract.methods.getPreBidParticipants().call({from: this.selectedAccount});
-		
-		
 	}
 
 	getDescriptions = async (p)=>{
@@ -56,6 +54,7 @@ export class backwardAuctionClient{
 	}
 
 	preBidFilter = async (arr) => {
+		console.log("PreBidFilter")
 		return await this.backwardAuctionContract.methods
 		.preBidFilter(arr)
 		.send({from: this.selectedAccount})

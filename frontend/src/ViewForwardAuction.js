@@ -124,7 +124,7 @@ const ViewForwardAuction = (props) => {
 		client.getEndTime().then(
 			endTime=>{
 				const currTime = Date.now()
-				setIsLive(currTime>=endTime)
+				setIsLive(currTime<endTime)
 			}
 		)
 	}, []);

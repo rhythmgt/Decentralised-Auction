@@ -1,51 +1,40 @@
 import React, {useEffect, useState} from "react";
-import {Button, Grid} from "@mui/material";
-import { Checkbox } from '@mui/material';
+import {Grid} from "@mui/material";
+import {Checkbox} from '@mui/material';
+import SelectBidderTable from "./SelectBidderTable";
 
-export  const SelectBidders = (props) =>{
+export const SelectBidders = (props) => {
+    const [rowData, setRowData] = useState([])
+    useEffect(() => {
+        props.client.getPreBidParticipants().then(
+            async participants => {
+                const promises = new Array(participants.length);
+                for (let i = 0; i < participants.length; i++) {
+                    promises[i] = props.client.getDescriptions(participants[i])
+                }
+                const desc = await Promise.all(promises)
+                let tableData = []
+                // console.log(participants)
+                // console.log(desc)
+                for (let i = 0; i < participants.length; i++) {
+                    tableData = [...tableData, {
+                        "id": participants[i],
+                        "accountAddress": participants[i],
+                        "documentLink": desc[i]
+                    }]
+                }
+                // console.log(tableData)
+                setRowData(tableData)
 
-	const [userDescDocs, setUserDescDocs] = useState(null)
-
-	const handleSubmission = (e) =>{
-		// Submit selected addresses to preBidFilter function of contract via preBidFilter of backwardAuctionClient
-
-	}
-
-	useEffect(() => {
-		props.client.getUserDescDocs()
-		.then(
-			descDocs => {
-				var promises = new Array(descDocs.length) 
-				for (var i =0; i<descDocs.length; i++){
-					promises[i] = props.client.getDescriptions(descDocs[i])
-				}
-				return Promise.all(promises)
-				}
-		)
-		.then(
-			desc => setUserDescDocs(desc)
-		)
-        
+            }
+        )
     }, []);
-
-	return (
-		<div id="homesec">
-			{userDescDocs && <Grid container direction="column" alignItems="center" className="centerButton" >
-				{
-					userDescDocs.map( (pair, i) => 
-					{
-						return <Grid>
-							<a href={pair}>Link</a>
-							<Checkbox />
-						</Grid>
-					
-					})
-				}
-			
-			</Grid>}
-			<Button variant="contained" onClick={handleSubmission}>
-                    Start Bidding
-            </Button>
-		</div>
-	)
+    // console.log("Here in Select Bidders")
+    return (
+        <div id="homesec">
+            <Grid container direction="column" alignItems="center" className="centerButton">
+                <SelectBidderTable row={rowData} client={props.client}/>
+            </Grid>
+        </div>
+    )
 }

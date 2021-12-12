@@ -69,6 +69,9 @@ const ViewBackwardAuction = (props) => {
 				console.log("Phase:", phase);
 				setAuctionPhase(phase)}
 		)
+		client.getPreBidParticipants().then(participants =>{
+			console.log("Participants :", participants)
+		})
 	}, []);
 	
 	if (auctionPhase<1){

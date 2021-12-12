@@ -78,10 +78,11 @@ const StartAuction = (props) => {
             })
         } else if (e.target.value === "backward") {
             setAuctionParameter({
-                "biddingPeriod": 1000,
+                "biddingPeriod": 100000,
                 "buyerAddress": props.selectedAccount,
                 "maxBid": 50,
                 "minDecrement": 0,
+                "preFilteringPeriod": "1000",
             })
         }
     }
