@@ -16,29 +16,12 @@ contract forwardAuction{
 	bool withdrawAllowed = false;
 	mapping(address => uint) private pendingReturns;
 
-	/// Auction has already ended
-	error AuctionAlreadyEnded();
 
-	/// This is not the highest bid
-	error NotHighestBid();
 
-	/// Auction Ending Time not reached yet
-	error EndingTimeNotReached();
 
-	/// Your bid already present
-	error BidAlreadyPresent();
 
-	/// Your bid is not present
-	error BidNotPresent();
 
-	/// Lesser than minimum bid
-	error LesserThanMin();
 
-	/// Lesser increment than threshold
-	error LesserIncrementThanThresh();
-
-	/// Withdraw Not allowed before Auction End
-	error WithdrawNotAllowed();
 
 	constructor( uint biddingPeriod, address payable sellerAddress, uint minBid, uint minIncrement, bool allowWithdraw, string memory file){
 		seller = sellerAddress;
@@ -51,19 +34,19 @@ contract forwardAuction{
 
 	function bid() external payable{
 		if (block.timestamp > auctionEndTime){
-			revert AuctionAlreadyEnded();
+			revert ("Auction has already ended");
 		}
 
 		if (msg.value <= highestBid){
-			revert NotHighestBid();
+			revert ("This is not the highest bid");
 		}
 
-		if (msg.value < minimumBid){
-			revert LesserThanMin();
+		if (msg.value <= minimumBid){
+			revert ("Lesser than minimum bid");
 		}
 
 		if (pendingReturns[msg.sender] > 0 || highestBidder == msg.sender){
-			revert BidAlreadyPresent();
+			revert ("Your bid already present");
 		}
 
 		if (highestBid > 0){
@@ -75,7 +58,7 @@ contract forwardAuction{
 
 	function incrementBid() external payable{
 		if (block.timestamp > auctionEndTime){
-			revert AuctionAlreadyEnded();
+			revert ("Auction has already ended");
 		}
 		
 		uint prevValue = pendingReturns[msg.sender];
@@ -85,15 +68,15 @@ contract forwardAuction{
 		}
 
 		if (prevValue==0){
-			revert BidNotPresent();
+			revert ("Your bid is not present");
 		}
 
 		if (msg.value + prevValue <= highestBid){
-			revert NotHighestBid();
+			revert ("This is not the highest bid");
 		}
 
 		if (100*(msg.value+prevValue - highestBid) < highestBid*minimumIncrement){
-			revert LesserIncrementThanThresh();
+			revert ("Lesser increment than threshold");
 		}
 
 		if (highestBid > 0){
@@ -107,10 +90,10 @@ contract forwardAuction{
 
 	function withdrawBid(address addr) internal returns (bool){
 		if (!withdrawAllowed){
-			revert WithdrawNotAllowed();
+			revert ("Withdraw Not allowed before Auction End");
 		}
 		uint amt = pendingReturns[addr];
-		if (amt==0) return true;
+		if (amt==0) revert ("Withdraw Not allowed");
 
 		pendingReturns[addr] = 0;
 
@@ -128,7 +111,7 @@ contract forwardAuction{
 	function auctionEnd() external {
 
 		if (block.timestamp < auctionEndTime || auctionEnded){
-			revert AuctionAlreadyEnded();
+			revert ("Auction is Live or Auction has already ended");
 		}
 
 		auctionEnded = true;

@@ -41,6 +41,7 @@ export class backwardAuctionClient {
             })
             .catch((err) => {
                 console.log(err);
+				alert(err);
             });
         // return await this.backwardAuctionContract.methods
         // .uploadDescription(url)
@@ -72,6 +73,10 @@ export class backwardAuctionClient {
         return await this.backwardAuctionContract.methods
             .bid(bidVal)
             .send({from: this.selectedAccount})
+			.catch((err)=>{
+				console.log(err)
+				alert(err)
+			});
 
     };
 
@@ -86,6 +91,7 @@ export class backwardAuctionClient {
             })
             .catch((err) => {
                 console.log(err);
+				alert(err)
             });
     }
 }

@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 import {Button, Grid} from "@mui/material";
 import TextField from '@mui/material/TextField';
 import { forwardAuctionClient } from "./forwardAuctionClient";
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 // essential auction info
 //  bid
@@ -18,6 +20,7 @@ const ViewForwardAuction = (props) => {
 	const [isSeller, setIsSeller] = useState(false);
 	const [isEnded, setIsEnded] = useState(false);
 	const [isLive, setIsLive] = useState(false);
+    const [isLoadingVFA, setIsLoadingVFA] = useState(true)
 	
 
 	const client = new forwardAuctionClient(props.contractInstance, props.selectedAccount);
@@ -73,7 +76,7 @@ const ViewForwardAuction = (props) => {
 	}
 
 	const endAuction = (e) => {
-		client.endAuction().then(
+		client.auctionEnd().then(
 			tx=> {console.log(tx);
 			return client.getIsEnded()}
 		)
@@ -86,7 +89,7 @@ const ViewForwardAuction = (props) => {
 		.then(
 			endTime=>{
 				const currTime = Date.now()
-				setIsLive(currTime>=endTime)
+				setIsLive(currTime<=endTime)
 			}
 		)
 	}
@@ -99,36 +102,83 @@ const ViewForwardAuction = (props) => {
 	});
 
 	useEffect(()=>{
+		// client.getHighestBid().then(
+		// 	hb => setHighestBid(hb)
+		// )
+		// client.getPreviousBid().then(
+		// 	pb=> setPreviousBid(pb)
+		// )
+		// client.getDocumentLink().then(
+		// 	dl=> setDocumentLink(dl)
+		// )
+		// client.getSeller().then(
+		// 	seller=>{
+		// 		console.log("seller", seller, props.selectedAccount);
+		// 		setIsSeller(props.selectedAccount.toLowerCase()===seller.toLowerCase());
+		// 	}
+		// )
+		// client.getIsEnded()
+		// .then(
+		// 	status => setIsEnded(status)
+		// )
+		// .catch(
+		// 	err=> console.log("error", err)
+		// )
+		// client.getEndTime().then(
+		// 	endTime=>{
+		// 		const currTime = Date.now()
+		// 		setIsLive(currTime<endTime)
+		// 	}
+		// )
 		client.getHighestBid().then(
-			hb => setHighestBid(hb)
+			hb => {
+				setHighestBid(hb)
+				return client.getPreviousBid();
+			}
 		)
-		client.getPreviousBid().then(
-			pb=> setPreviousBid(pb)
+		.then(
+			pb=> {
+				setPreviousBid(pb)
+				return client.getDocumentLink()
+			}
 		)
-		client.getDocumentLink().then(
-			dl=> setDocumentLink(dl)
+		.then(
+			dl=> {
+				setDocumentLink(dl)
+				return client.getSeller()
+			}
 		)
-		client.getSeller().then(
+		.then(
 			seller=>{
 				console.log("seller", seller, props.selectedAccount);
 				setIsSeller(props.selectedAccount.toLowerCase()===seller.toLowerCase());
+				return client.getIsEnded()
 			}
 		)
-		client.getIsEnded()
 		.then(
-			status => setIsEnded(status)
+			status => {
+				setIsEnded(status)
+				return client.getEndTime()
+			}
+		)
+		.then(
+			endTime=>{
+				const currTime = Date.now()/1000
+				console.log("Remaining Time: ", endTime-currTime)
+				setIsLive(currTime<endTime)
+				setIsLoadingVFA(false)
+			}
 		)
 		.catch(
 			err=> console.log("error", err)
 		)
-		client.getEndTime().then(
-			endTime=>{
-				const currTime = Date.now()
-				setIsLive(currTime<endTime)
-			}
-		)
 	}, []);
 	
+	if (isLoadingVFA) {
+        return (<div id="homesec"><p className="centerButton"><CircularProgress size="60px" thickness={4}
+                                                                                style={{color: "#007bff"}}/></p></div>);
+    }
+
     return (
         <div id="homesec">
 			<Grid container direction="column" alignItems="center" className="centerButton" >

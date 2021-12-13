@@ -35,6 +35,13 @@ export class forwardAuctionClient{
 		return await this.forwardAuctionContract.methods
 			.bid()
 			.send({from: this.selectedAccount, value: bidVal})
+			.then((tx)=>{
+				console.log(tx);
+			})
+			.catch((err)=>{
+				console.log(err)
+				alert(err)
+			});
 	
 	};
 
@@ -45,6 +52,13 @@ export class forwardAuctionClient{
 		return await this.forwardAuctionContract.methods
 		.incrementBid()
 		.send({from: this.selectedAccount, value: incrementValue})
+		.then((tx)=>{
+			console.log(tx);
+		})
+		.catch((err)=>{
+			console.log(err)
+			alert(err)
+		});
 		
 	}
 
@@ -54,19 +68,28 @@ export class forwardAuctionClient{
 		return await this.forwardAuctionContract.methods
 		.withdraw()
 		.send({from: this.selectedAccount})
+		.then((tx)=>{
+			console.log(tx);
+		})
+		.catch((err)=>{
+			console.log(err)
+			alert(err)
+		});
 		
 	}
 	auctionEnd = async() => {
 		
 		console.log('Trying to end auction');
-		return this.forwardAuctionContract.methods
+		return await this.forwardAuctionContract.methods
 		.auctionEnd()
 		.send({from: this.selectedAccount})
 		.then((tx)=>{
-		console.log(tx);
+			console.log(tx);
 		})
 		.catch((err) =>{
 			console.log(err);
+			alert(err)
+
 		});
 	}
 }

@@ -16,19 +16,8 @@ contract backwardAuction{
 	uint public lowestBid;
 	uint public minimumDecrement;
 	uint public auctionPhase=0;
-	bool public auctionEnded = false;
 	string public auctionFile = "None";
 
-	/// Auction has already ended
-	error AuctionAlreadyEnded();
-
-	/// PreFiltering Phase Is Over
-	error PreBidFilteringPhaseIsOver();
-
-	/// PreFiltering Phase Is Not Over
-	error PreBidFilteringPhaseIsNotOver();
-
-	error AddressNotAllowed();
 
 	constructor(uint filteringPeriod, uint biddingPd, address payable buyerAddress, uint maxBid, uint minDecrement, string memory file) payable{
 		require(msg.value == maxBid);
@@ -50,7 +39,7 @@ contract backwardAuction{
 
 	function uploadDescription( string calldata description) external{
 		if (block.timestamp>preBidFilteringEndTime){
-			revert PreBidFilteringPhaseIsOver();
+			revert ("Pre-bid Filtering phase is already over");
 		}
 		preBidParticipants.push(msg.sender);
 		userDesc[msg.sender] = description;
@@ -73,7 +62,7 @@ contract backwardAuction{
 
 	function bidding(address addr, uint biddingAmount) internal returns (bool){
 		if (block.timestamp > auctionEndTime || biddingAmount > lowestBid - minimumDecrement){
-		    revert ("Either the auction has ended or the increment is below the threshold");
+		    revert ("Either the auction has ended or bid amount is more than maximum allowed value");
 		}
 		if (allowedAddresses[addr] == true){
 			lowestBidder = addr;
@@ -81,7 +70,7 @@ contract backwardAuction{
 			return true;
 		}
 		else{
-			revert ("Seller aot allowed to participate");
+			revert ("Seller not allowed to participate");
 		}
 	}
 
@@ -91,10 +80,10 @@ contract backwardAuction{
 	}
 
 	function auctionEnd() public onlyBuyer {
-		if (block.timestamp < auctionEndTime || auctionEnded){
-			revert AuctionAlreadyEnded();
+		if (block.timestamp < auctionEndTime || auctionPhase==2){
+			revert ("Auction is Currently Live or Auction already Ended");
 		}
-		auctionEnded = true;
+		auctionPhase=2;
 		payable(lowestBidder).transfer(lowestBid);
 		payable(buyer).transfer(startBid - lowestBid);
 	}
