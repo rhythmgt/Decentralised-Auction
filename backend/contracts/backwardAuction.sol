@@ -28,12 +28,14 @@ contract backwardAuction{
 	/// PreFiltering Phase Is Not Over
 	error PreBidFilteringPhaseIsNotOver();
 
+	error AddressNotAllowed();
+
 	constructor(uint filteringPeriod, uint biddingPd, address payable buyerAddress, uint maxBid, uint minDecrement, string memory file) payable{
 		require(msg.value == maxBid);
 		require(msg.sender == buyerAddress);
 		buyer = buyerAddress;
 		preBidFilteringEndTime = block.timestamp + filteringPeriod;
-		// auctionEndTime = block.timestamp + biddingPeriod;
+		auctionEndTime = block.timestamp + biddingPeriod + filteringPeriod*2;
 		biddingPeriod = biddingPd;
 		lowestBid = maxBid;
 		startBid = maxBid;
@@ -60,22 +62,27 @@ contract backwardAuction{
 
 	function preBidFilter (address[] calldata selectedAccounts) external onlyBuyer(){
 		if (block.timestamp<preBidFilteringEndTime){
-			revert PreBidFilteringPhaseIsNotOver();
+			revert ("PreBid Filtering Phase Is Not Over");
 		}
 		for (uint j=0; j<selectedAccounts.length; j++){
 			allowedAddresses[selectedAccounts[j]] = true;
 		}
 		auctionPhase = 1;
-		auctionEndTime = block.timestamp + biddingPeriod;
+		// auctionEndTime = block.timestamp + biddingPeriod;
 	}
 
 	function bidding(address addr, uint biddingAmount) internal returns (bool){
 		if (block.timestamp > auctionEndTime || biddingAmount > lowestBid - minimumDecrement){
-		    return false;
+		    revert ("Either the auction has ended or the increment is below the threshold");
 		}
-		lowestBidder = addr;
-		lowestBid = biddingAmount;
-		return true;
+		if (allowedAddresses[addr] == true){
+			lowestBidder = addr;
+			lowestBid = biddingAmount;
+			return true;
+		}
+		else{
+			revert ("Seller aot allowed to participate");
+		}
 	}
 
 

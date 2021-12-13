@@ -2,6 +2,7 @@ import * as React from 'react';
 import {DataGrid} from '@mui/x-data-grid';
 import {Button, Checkbox} from '@mui/material';
 import {useState} from "react";
+import {useHistory} from "react-router-dom";
 
 
 function createLink(params) {
@@ -52,7 +53,9 @@ const columns = (updater) => {
 }
 
 export default function SelectBidderTable(props) {
+    const hist = useHistory();
     const [sellerState, setSellerState] = useState({})
+
     function handleSubmission() {
         let selectedSeller = []
         for (const [key, value] of Object.entries(sellerState)) {
@@ -61,8 +64,11 @@ export default function SelectBidderTable(props) {
             }
         }
         console.log(selectedSeller)
-        props.client.preBidFilter(selectedSeller).then((result) => {console.log(result)})
+        props.client.preBidFilter(selectedSeller).then(() => {
+            hist.push("/");
+        })
     }
+
     function updater(seller, checked) {
         let tempState = sellerState
         tempState[seller] = checked
