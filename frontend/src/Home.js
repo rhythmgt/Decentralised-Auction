@@ -32,8 +32,8 @@ const Home = (props) => {
         console.log("Home useEffect called")
         loadLiveAuction();
         loadPastAuction();
-        const liveAuctionInterval = setInterval(loadLiveAuction, 5000);
-        const pastAuctionInterval = setInterval(loadPastAuction, 5000);
+        const liveAuctionInterval = setInterval(loadLiveAuction, 1000);
+        const pastAuctionInterval = setInterval(loadPastAuction, 1000);
         return () => {
             console.log('Clearing Intervals');
             clearInterval(liveAuctionInterval);

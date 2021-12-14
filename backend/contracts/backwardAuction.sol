@@ -24,7 +24,7 @@ contract backwardAuction{
 		require(msg.sender == buyerAddress);
 		buyer = buyerAddress;
 		preBidFilteringEndTime = block.timestamp + filteringPeriod;
-		auctionEndTime = block.timestamp + biddingPeriod + filteringPeriod*2;
+		auctionEndTime = block.timestamp + biddingPd + filteringPeriod*2;
 		biddingPeriod = biddingPd;
 		lowestBid = maxBid;
 		startBid = maxBid;
@@ -61,8 +61,11 @@ contract backwardAuction{
 	}
 
 	function bidding(address addr, uint biddingAmount) internal returns (bool){
-		if (block.timestamp > auctionEndTime || biddingAmount > lowestBid - minimumDecrement){
-		    revert ("Either the auction has ended or bid amount is more than maximum allowed value");
+		if (block.timestamp > auctionEndTime){
+			revert ("The auction has ended");
+		} 
+		if(biddingAmount > lowestBid - minimumDecrement){
+		    revert ("Bid amount doen not satify minimum decrement threshold");
 		}
 		if (allowedAddresses[addr] == true){
 			lowestBidder = addr;

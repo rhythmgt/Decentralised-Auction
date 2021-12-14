@@ -101,7 +101,7 @@ def block_scanner(w3):
     while True:
         if current_block == total_blocks:
             print("Total blocks : ", total_blocks)
-            time.sleep(3)
+            time.sleep(1)
             continue
         current_block += 1
         block = web3.eth.get_block(current_block)

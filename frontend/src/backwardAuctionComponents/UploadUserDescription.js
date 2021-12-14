@@ -56,20 +56,20 @@ export const UploadUserDescription = (props) => {
 			:
 				
 				<Grid container direction="column" alignItems="center" className="centerButton" >
-					<Grid>
+					<Grid item margin={'10px'}>
 						UPLOAD USER DESCRIPTION
 					</Grid>
-					<Grid container
-						style={{justifyContent: "center", width: "fit-content", transform: "translate(-15%)"}}>
-						<Grid item xs={5}>
+					<Grid item margin={'10px'} container direction="row" alignItems="center">
+						<Grid item margin={'10px'}>
 							<input type="file" onChange={onChangeFile}/>
 						</Grid>
-					</Grid>
-					<Grid item margin={'10px'}>
+						<Grid item margin={'10px'}>
 						<Button variant="contained" onClick={submitDocument}>
 							Upload Document
 						</Button>
 					</Grid>
+				</Grid>
+					
 				</Grid>
 		}
 		</div>
