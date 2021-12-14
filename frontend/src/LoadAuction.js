@@ -46,12 +46,6 @@ const LoadAuction = (props) => {
 			console.log("Invalid address");
 			return;
 		}
-		// contractInstance.methods.auctionEndTime().call({from: props.selectedAccount}).then((tx) => {
-		// 	console.log("Auction End time:", tx);
-		// })
-		// 	.catch((err) => {
-		// 		console.log(err);
-		// 	});
 		setAuctionLoaded(true);
 	}
 	useEffect(() => {
@@ -77,8 +71,8 @@ const LoadAuction = (props) => {
                     <FormControl>
                         <FormLabel>Auction type</FormLabel>
                         <RadioGroup row>
-                            <FormControlLabel value="forward" control={<Radio/>} label="Sell" onChange={auctionChange}/>
-                            <FormControlLabel value="backward" control={<Radio/>} label="Buy" onChange={auctionChange}/>
+                            <FormControlLabel value="forward" control={<Radio/>} label="Forward" onChange={auctionChange}/>
+                            <FormControlLabel value="backward" control={<Radio/>} label="Backward" onChange={auctionChange}/>
                         </RadioGroup>
                     </FormControl>
                 </Grid>

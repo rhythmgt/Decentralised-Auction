@@ -23,7 +23,6 @@ export const SelectBidders = (props) => {
                         "documentLink": desc[i]
                     }]
                 }
-                // console.log(tableData)
                 setRowData(tableData)
 
             }

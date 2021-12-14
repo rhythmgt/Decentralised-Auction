@@ -53,27 +53,7 @@ const ViewBackwardAuction = (props) => {
 	});
 
 	useEffect(()=>{
-		// client.getLowestBid().then(
-		// 	lb => setLowestBid(lb)
-		// )
 
-		// client.getDocumentLink().then(
-		// 	dl=> setDocumentLink(dl)
-		// )
-		// client.getBuyer().then(
-		// 	buyer=>{
-		// 		console.log("buyer", buyer, props.selectedAccount);
-		// 		setIsBuyer(props.selectedAccount.toLowerCase()===buyer.toLowerCase());
-		// 	}
-		// )
-		// client.getAuctionPhase().then(
-		// 	phase=>{
-		// 		console.log("Phase:", phase);
-		// 		setAuctionPhase(phase)}
-		// )
-		// client.getPreBidParticipants().then(participants =>{
-		// 	console.log("Participants :", participants)
-		// })
 		client.getLowestBid().then(
 			lb => {
 				setLowestBid(lb)

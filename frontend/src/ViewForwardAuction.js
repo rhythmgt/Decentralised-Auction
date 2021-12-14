@@ -102,34 +102,6 @@ const ViewForwardAuction = (props) => {
 	});
 
 	useEffect(()=>{
-		// client.getHighestBid().then(
-		// 	hb => setHighestBid(hb)
-		// )
-		// client.getPreviousBid().then(
-		// 	pb=> setPreviousBid(pb)
-		// )
-		// client.getDocumentLink().then(
-		// 	dl=> setDocumentLink(dl)
-		// )
-		// client.getSeller().then(
-		// 	seller=>{
-		// 		console.log("seller", seller, props.selectedAccount);
-		// 		setIsSeller(props.selectedAccount.toLowerCase()===seller.toLowerCase());
-		// 	}
-		// )
-		// client.getIsEnded()
-		// .then(
-		// 	status => setIsEnded(status)
-		// )
-		// .catch(
-		// 	err=> console.log("error", err)
-		// )
-		// client.getEndTime().then(
-		// 	endTime=>{
-		// 		const currTime = Date.now()
-		// 		setIsLive(currTime<endTime)
-		// 	}
-		// )
 		client.getHighestBid().then(
 			hb => {
 				setHighestBid(hb)

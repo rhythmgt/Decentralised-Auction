@@ -43,15 +43,7 @@ export class backwardAuctionClient {
                 console.log(err);
 				alert(err);
             });
-        // return await this.backwardAuctionContract.methods
-        // .uploadDescription(url)
-        // .estimateGas({from: this.selectedAccount})
-        // .then((tx)=>{
-        // console.log(tx);
-        // })
-        // .catch((err) =>{
-        // 	console.log(err);
-        // })
+
     }
 
     preBidFilter = async (arr) => {
