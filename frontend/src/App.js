@@ -1,25 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import {useState} from "react";
+import NavBar from "./NavBar";
+import Home from "./Home";
+import StartAuction from "./StartAuction";
+import ViewAuction from "./ViewAuction";
+import LoadAuction from "./LoadAuction";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [selectedAccount, setSelectedAccount] = useState(false);
+
+    return (
+        <Router>
+            <NavBar selectedAccount={selectedAccount} setSelectedAccount={setSelectedAccount}/>
+            <div className="content">
+                <Switch>
+                    <Route exact path="/">
+                        <Home/>
+                    </Route>
+                    <Route exact path="/startauction">
+                        <StartAuction selectedAccount={selectedAccount}/>
+                    </Route>
+                    <Route exact path="/viewauction/:add/:type">
+                        <ViewAuction selectedAccount={selectedAccount}/>
+                    </Route>
+                    <Route exact path="/loadauction">
+                        <LoadAuction selectedAccount={selectedAccount}/>
+                    </Route>
+                </Switch>
+            </div>
+        </Router>
+    );
 }
 
 export default App;
