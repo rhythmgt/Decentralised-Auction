@@ -1,5 +1,6 @@
 # Decentralised-Auction
-This is a blockchain based e-Auction system
+This is a blockchain based e-Auction system  
+For detailed explaination on how this works, watch <a href = https://youtu.be/6q05OFIF_uE>this</a> video.
 
 ## Dependencies 
 1. Install Metamask for your browser
